@@ -7,13 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Service
 @Slf4j
 public class UserService {
 
@@ -25,7 +25,7 @@ public class UserService {
 //    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
 
-    public void saveNewUser(User user){
+    public boolean saveNewUser(User user){
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles(Arrays.asList("USER"));
@@ -37,6 +37,7 @@ public class UserService {
 //            log.trace("hahahahaha");
             log.error("Error occurred for {} :", user.getUserName(), e);
         }
+        return false;
     }
 
     public boolean save(User user){
