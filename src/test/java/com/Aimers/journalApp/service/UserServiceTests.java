@@ -3,7 +3,6 @@ package com.Aimers.journalApp.service;
 
 import com.Aimers.journalApp.entity.User;
 import com.Aimers.journalApp.repository.UserRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.CsvSource;
