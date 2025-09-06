@@ -7,6 +7,7 @@ import com.Aimers.journalApp.entity.User;
 import com.Aimers.journalApp.model.SentimentData;
 import com.Aimers.journalApp.repository.UserRepositoryImpl;
 import com.Aimers.journalApp.service.EmailService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class UserScheduler {
 
     @Autowired
@@ -35,35 +37,53 @@ public class UserScheduler {
     private KafkaTemplate<String,SentimentData> kafkaTemplate;
 
 
-    public void getUsersAndSendSaEmail(){
+    @Scheduled(cron = "0 0 9 * * SUN")
+    public void fetchUsersAndSendSaMail() {
         List<User> users = userRepository.getUserForSA();
-        for (User user : users){
+        for (User user : users) {
             List<JournalEntry> journalEntries = user.getJournalEntries();
-            List<Sentiment> sentiments = journalEntries.stream().filter(x -> x.getDate().isAfter(LocalDateTime.now().minus(7, ChronoUnit.DAYS))).map(x->x.getSentiment()).collect(Collectors.toList());
-            Map <Sentiment, Integer> sentimentCounts = new HashMap<>();
-            for (Sentiment sentiment : sentiments){
-                if (sentiment != null){
-                    sentimentCounts.put(sentiment,sentimentCounts.getOrDefault(sentiment,0) + 1);
+            List<Sentiment> sentiments = journalEntries.stream().filter(x -> x.getDate().isAfter(LocalDateTime.now().minus(7, ChronoUnit.DAYS))).map(x -> x.getSentiment()).collect(Collectors.toList());
+            Map<Sentiment, Integer> sentimentCounts = new HashMap<>();
+            for (Sentiment sentiment : sentiments) {
+                if (sentiment != null)
+                    sentimentCounts.put(sentiment, sentimentCounts.getOrDefault(sentiment, 0) + 1);
+            }
+            Sentiment mostFrequentSentiment = null;
+            int maxCount = 0;
+            for (Map.Entry<Sentiment, Integer> entry : sentimentCounts.entrySet()) {
+                if (entry.getValue() > maxCount) {
+                    maxCount = entry.getValue();
+                    mostFrequentSentiment = entry.getKey();
                 }
-                Sentiment mostFrequentSentiment = null;
-                int maxCount = 0;
-                for (Map.Entry <Sentiment,Integer> entry : sentimentCounts.entrySet()){
-                    if (entry.getValue() > maxCount){
-                        maxCount = entry.getValue();
-                        mostFrequentSentiment = entry.getKey();
-                    }
-                }
-
-                if (mostFrequentSentiment != null){
-                    SentimentData sentimentData = SentimentData.builder().email(user.getEmail()).sentiment("Sentiment for last 7 days "+mostFrequentSentiment).build();
-                    kafkaTemplate.send("weekly-sentiments", sentimentData.getEmail(), sentimentData);
-                }
+            }
+            if (mostFrequentSentiment != null) {
+                SentimentData sentimentData = SentimentData.builder()
+                        .email(user.getEmail())
+                        .sentiment("Sentiment for last 7 days: " + mostFrequentSentiment)
+                        .build();
+                kafkaTemplate.send("weekly-sentiments", sentimentData.getEmail(), sentimentData)
+                        .whenComplete((result, ex) -> {
+                            if (ex == null) {
+                                log.info("Sent message={} with offset={}", sentimentData,
+                                        result.getRecordMetadata().offset());
+                            } else {
+                                log.error("Failed to send Kafka message, sending email fallback", ex);
+                                emailService.sendEmail(
+                                        sentimentData.getEmail(),
+                                        "Sentiment for previous week",
+                                        sentimentData.getSentiment()
+                                );
+                            }
+                        });
             }
         }
     }
 
-    @Scheduled(cron = "0 0/10 * 1/1 * ?")
-    public void clearAppCache(){
+    @Scheduled(cron = "0 0/10 * ? * *")
+    public void clearAppCache() {
         appCache.init();
     }
+
 }
+
+
