@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: journal App
+
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVERS}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      key-deserializer:  org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: com.Aimers.journalApp.model
+
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 16140
+      username: default
+      password: ${REDIS_PASSWORD}
+      database: 0
+
+    mongodb:
+      uri: ${MONGODB_URI}
+      auto-index-creation: true
+  main:
+    allow-circular-references: true
+
+
+
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${JAVA_EMAIL}
+    password: ${JAVA_EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
+server:
+  port: ${SERVER_PORT}
+
+weather:
+  api:
+    key: ${WEATHER_API_KEY}
+
+
