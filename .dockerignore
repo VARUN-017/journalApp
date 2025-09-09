@@ -1,0 +1,39 @@
+# Build output
+target/
+build/
+
+# Git / VCS
+.git
+.gitignore
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Logs and temp
+*.log
+tmp/
+*.tmp
+
+# Local env / credentials (never commit secrets)
+.env
+.env.*
+secrets.properties
+
+# Docker, editor backup, archives
+docker-compose*.yml
+*.tar
+*.zip
+
+# Java / Maven wrapper files you don't want to copy unnecessarily
+.mvn/wrapper/
+.logs/
+
+# Node artifacts if present
+node_modules/
+dist/
