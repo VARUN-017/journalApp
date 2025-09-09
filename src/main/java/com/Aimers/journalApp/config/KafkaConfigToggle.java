@@ -8,9 +8,8 @@ import org.springframework.kafka.annotation.EnableKafka;
 
 @Configuration
 @ConditionalOnProperty(
-        value = "kafka.enabled",
-        havingValue = "true",
-        matchIfMissing = true
+        name = "kafka.enabled",
+        havingValue = "true"
 )
 @Import(KafkaAutoConfiguration.class)
 @EnableKafka
