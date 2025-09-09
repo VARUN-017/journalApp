@@ -2,10 +2,16 @@ package com.Aimers.journalApp.service;
 
 import com.Aimers.journalApp.model.SentimentData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
+@ConditionalOnProperty(
+        value = "kafka.enabled",
+        havingValue = "true",
+        matchIfMissing = true
+)
 public class SentimentConsumerService {
 
     @Autowired
