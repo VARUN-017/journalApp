@@ -2,11 +2,9 @@ spring:
   application:
     name: journal App
 
-  kafka:
-    enabled: false
+kafka:
+  enabled: false
 
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
 
 
 
