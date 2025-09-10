@@ -2,13 +2,6 @@ spring:
   application:
     name: journal App
 
-kafka:
-  enabled: false
-
-
-
-
-
   data:
     redis:
       host: ${REDIS_HOST}
@@ -20,11 +13,9 @@ kafka:
     mongodb:
       uri: ${MONGODB_URI}
       auto-index-creation: true
+
   main:
     allow-circular-references: true
-
-
-
 
   mail:
     host: smtp.gmail.com
@@ -38,7 +29,6 @@ kafka:
           starttls:
             enable: true
 
-
 server:
   port: ${SERVER_PORT}
 
@@ -46,4 +36,5 @@ weather:
   api:
     key: ${WEATHER_API_KEY}
 
-
+kafka:
+  enabled: false
