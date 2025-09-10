@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-@ConditionalOnProperty(name = "kafka.enabled", havingValue = "true", matchIfMissing = true)
 public class UserScheduler {
 
     @Autowired
