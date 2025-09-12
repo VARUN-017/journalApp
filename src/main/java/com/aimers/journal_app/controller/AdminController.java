@@ -3,6 +3,7 @@ package com.aimers.journal_app.controller;
 import com.aimers.journal_app.cache.AppCache;
 import com.aimers.journal_app.entity.User;
 import com.aimers.journal_app.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class AdminController {
     private AppCache appCache;
 
     @GetMapping("/all-users")
+    @Operation(summary = "get all users")
     public ResponseEntity<?> getAllUsers() {
         List<User> all = userService.getAll();
         if (all != null && !all.isEmpty()) {
@@ -32,11 +34,13 @@ public class AdminController {
     }
 
     @PostMapping("/create-admin")
+    @Operation(summary = "Create a Admin")
     public void createUser(@RequestBody User user){
         userService.saveAdmin(user);
     }
 
     @GetMapping("/clear-app-cache")
+    @Operation(summary = "Clear Cache")
     public void clearAppCache(){
         appCache.init();
     }

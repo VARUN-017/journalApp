@@ -5,6 +5,7 @@ import com.aimers.journal_app.entity.User;
 import com.aimers.journal_app.service.UserDetailsServiceImpl;
 import com.aimers.journal_app.service.UserService;
 import com.aimers.journal_app.utilis.JwtUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,18 +36,21 @@ public class PublicController {
 
 
     @GetMapping("/health-check")
+    @Operation(summary = "health-check")
     public String healthCheck(){
         return "ok";
     }
 
 
     @PostMapping("/signup")
+    @Operation(summary = "User SignIn")
     public void signup(@RequestBody UserDTO userDTO){
         userService.saveNewUser(userDTO);
     }
 
 
     @PostMapping("/login")
+    @Operation(summary = "User Login")
     public ResponseEntity<String> login(@RequestBody User user){
         try {
             authenticationManager.authenticate(

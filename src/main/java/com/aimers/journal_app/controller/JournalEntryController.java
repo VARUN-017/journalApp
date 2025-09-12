@@ -4,6 +4,7 @@ import com.aimers.journal_app.entity.JournalEntry;
 import com.aimers.journal_app.entity.User;
 import com.aimers.journal_app.service.JournalEntryService;
 import com.aimers.journal_app.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class JournalEntryController {
     private UserService userService;
 
     @GetMapping
+    @Operation(summary = "get all journal entries of a user")
     public ResponseEntity<?> getAllEntriesOfUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
@@ -39,6 +41,7 @@ public class JournalEntryController {
     }
 
     @PostMapping
+    @Operation(summary = "create journal entries of a user")
     public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry myEntry){
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -51,6 +54,7 @@ public class JournalEntryController {
     }
 
     @GetMapping("/id/{myId}")
+    @Operation(summary = "get journal entry of a user by Id")
     public ResponseEntity<JournalEntry> findById(@PathVariable ObjectId myId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
@@ -66,6 +70,7 @@ public class JournalEntryController {
     }
 
     @DeleteMapping("/id/{myId}")
+    @Operation(summary = "delete journal entry of a user by Id")
     public ResponseEntity<?> deleteById(@PathVariable ObjectId myId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
@@ -78,6 +83,7 @@ public class JournalEntryController {
     }
 
     @PutMapping("/id/{myId}")
+    @Operation(summary = "Update journal entry of a user by Id")
     public ResponseEntity<?> updateJournalById(@PathVariable ObjectId myId,
                                                @RequestBody JournalEntry newEntry
     ){

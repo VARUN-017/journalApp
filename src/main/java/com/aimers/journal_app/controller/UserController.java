@@ -5,6 +5,7 @@ import com.aimers.journal_app.dto.UpdateUserDTO;
 import com.aimers.journal_app.entity.User;
 import com.aimers.journal_app.service.UserService;
 import com.aimers.journal_app.service.WeatherService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ public class UserController {
     private WeatherService weatherService;
 
     @PutMapping
+    @Operation(summary = "Update User")
     public ResponseEntity<?> updateUser(@RequestBody UpdateUserDTO updateUserDTO){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
@@ -36,6 +38,7 @@ public class UserController {
     }
 
     @DeleteMapping
+    @Operation(summary = "Delete user")
     public ResponseEntity<?> deleteByUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userService.deleteByUserName(authentication.getName());
@@ -43,6 +46,7 @@ public class UserController {
     }
 
     @GetMapping
+    @Operation(summary = "get Current Weather")
     public ResponseEntity<?> greeting(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         WeatherResponse weatherResponse = weatherService.getWeather("Bangalore");
