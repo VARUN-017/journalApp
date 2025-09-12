@@ -1,0 +1,31 @@
+package com.aimers.journal_app.service;
+
+import com.aimers.journal_app.model.SentimentData;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Service;
+
+@Service
+@ConditionalOnProperty(name = "kafka.enabled", havingValue = "true", matchIfMissing = true)
+public class SentimentConsumerService {
+
+    @Autowired
+    private EmailService emailService;
+
+
+    @KafkaListener(topics = {"weekly-sentiments"}, groupId = "weekly-sentiment-group",autoStartup = "${kafka.enabled:true}")
+    public void consume(SentimentData sentimentData){
+        sendEmail(sentimentData);
+    }
+
+
+    private void sendEmail(SentimentData sentimentData){
+        emailService.sendEmail(sentimentData.getEmail(),"Sentiment for previous week", sentimentData.getSentiment());
+    }
+
+
+
+
+
+}
